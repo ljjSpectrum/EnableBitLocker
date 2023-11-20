@@ -6,7 +6,7 @@ $bitlockerStatus = Get-BitLockerVolume -MountPoint $driveLetter | Select-Object 
 
 if ($bitlockerStatus -eq $null) {
     # BitLocker is not enabled, so enable it
-    Enable-BitLocker -MountPoint $driveLetter -EncryptionMethod XtsAes256 -UsedSpaceOnly
+    Enable-BitLocker -MountPoint $driveLetter -EncryptionMethod XtsAes256
 
     # Add BitLocker recovery key protector to store in Active Directory
     $recoveryKeyProtector = Add-BitLockerKeyProtector -MountPoint $driveLetter -RecoveryPasswordProtector
