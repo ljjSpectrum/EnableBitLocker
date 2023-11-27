@@ -2,6 +2,7 @@
 $driveLetter = "C:"
 $password = ConvertTo-SecureString "S11@jd%1500" -AsPlainText -Force
 $Cred = New-Object System.Management.Automation.PSCredential ("jdoe@spectrumfurniture.com", $password)
+$HN = Hostname
 
 # Check if BitLocker is already enabled on the drive
 $bitlockerStatus = Get-BitLockerVolume -MountPoint $driveLetter | Select-Object -ExpandProperty EncryptionPercentage -ErrorAction SilentlyContinue
@@ -16,7 +17,7 @@ if ($bitlockerStatus -eq $null) {
     # Backup key to AD
     Invoke-Command -ScriptBlock {
             BackupToAAD-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $recoveryKeyProtector.KeyProtector[1].KeyProtectorId
-        } -Credential $Cred
+        } -cn $HN -Credential $Cred
          
 } else {
     
@@ -24,7 +25,7 @@ if ($bitlockerStatus -eq $null) {
     $BLV = Get-BitLockerVolume -MountPoint "C:"
     Invoke-Command -ScriptBlock {
             BackupToAAD-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $BLV.KeyProtector[1].KeyProtectorId
-        } -Credential $Cred
+        } -Credential $Cred -cn $HN
     
     Backup-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $BLV.KeyProtector[1].KeyProtectorId
    
