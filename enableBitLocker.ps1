@@ -15,17 +15,19 @@ if ($bitlockerStatus -eq $null) {
     $recoveryKeyProtector = Add-BitLockerKeyProtector -MountPoint $driveLetter -RecoveryPasswordProtector
     
     # Backup key to AD
-    Invoke-Command -ScriptBlock {
-            BackupToAAD-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $recoveryKeyProtector.KeyProtector[1].KeyProtectorId
-        } -cn $HN -Credential $Cred
+    Backup-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $recoveryKeyProtector.KeyProtector[1].KeyProtectorId
+   
+   # Invoke-Command -ScriptBlock {
+   #          BackupToAAD-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $recoveryKeyProtector.KeyProtector[1].KeyProtectorId
+   #     } -cn $HN -Credential $Cred
          
 } else {
     
     Write-Host "Backing up BitLocker Key on drive $($driveLetter)."
-    $BLV = Get-BitLockerVolume -MountPoint "C:"
-    Invoke-Command -ScriptBlock {
-            BackupToAAD-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $BLV.KeyProtector[1].KeyProtectorId
-        } -Credential $Cred -cn $HN
+   # $BLV = Get-BitLockerVolume -MountPoint "C:"
+   # Invoke-Command -ScriptBlock {
+   #         BackupToAAD-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $BLV.KeyProtector[1].KeyProtectorId
+   #     } -Credential $Cred -cn $HN
     
     Backup-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId $BLV.KeyProtector[1].KeyProtectorId
    
